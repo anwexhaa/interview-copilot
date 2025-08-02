@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import { useChat } from './ChatContext';
+import { getAuth } from 'firebase/auth';  // <-- import getAuth from firebase
 
 export default function ChatInput() {
   const [input, setInput] = useState('');
   const { addMessage, setLoading } = useChat();
+  const auth = getAuth();  // <-- initialize Firebase Auth
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -13,16 +15,22 @@ export default function ChatInput() {
     if (!prompt) return;
     console.log('Fetching from URL:', `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/chat/ask`);
 
-
-    // Show user message immediately
     addMessage({ role: 'user', content: prompt });
     setInput('');
     setLoading(true);
 
     try {
+      const user = auth.currentUser;
+      if (!user) throw new Error('User not authenticated');
+
+      const idToken = await user.getIdToken(); // get Firebase ID token
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/chat/ask`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,  // <-- send token in header
+        },
         body: JSON.stringify({ prompt }),
       });
 
