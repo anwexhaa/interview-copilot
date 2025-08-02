@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Loader2, FileCheck2 } from 'lucide-react'
 
-export default function ResumeReview() {
+export default function ResumeFixPage() {
   const [jobDescription, setJobDescription] = useState('')
   const [resumeFile, setResumeFile] = useState<File | null>(null)
   const [score, setScore] = useState<number | null>(null)
@@ -24,14 +24,12 @@ export default function ResumeReview() {
       formData.append('jobDescription', jobDescription)
       formData.append('resumeFile', resumeFile)
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/resume-review`
-, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/resume-review`, {
         method: 'POST',
         body: formData,
       })
 
       const data = await response.json()
-
       const scoreMatch = data.feedback?.match(/score\s*[:\-]?\s*(\d{1,3})/i)
       const extractedScore = scoreMatch ? parseInt(scoreMatch[1]) : null
 
@@ -59,15 +57,13 @@ export default function ResumeReview() {
       formData.append('resumeFile', resumeFile)
       formData.append('optimize', 'true')
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/resume-review`
-, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/resume-review`, {
         method: 'POST',
         body: formData,
       })
 
       const data = await response.json()
 
-      // If suggestions are returned as a list (recommended)
       if (Array.isArray(data.recommendations)) {
         setFeedback(data.recommendations)
       } else {
@@ -84,7 +80,6 @@ export default function ResumeReview() {
   return (
     <div className="bg-background min-h-screen py-10 px-6 font-sans text-white">
       <div className="max-w-screen-lg mx-auto flex flex-col md:flex-row gap-10">
-
         {/* LEFT */}
         <div className="flex-1 flex flex-col gap-6">
           <div>
