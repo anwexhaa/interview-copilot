@@ -1,0 +1,5 @@
+{
+  "Arrays": ["two-sum", "best-time-to-buy-and-sell-stock", "contains-duplicate"],
+  "Linked List": ["reverse-linked-list", "merge-two-sorted-lists"],
+  "DP": ["climbing-stairs", "house-robber", "longest-palindromic-substring"]
+}

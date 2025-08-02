@@ -59,14 +59,16 @@ export default function SidebarNav() {
       </div>
 
       {/* Bottom section */}
-      <div className="flex flex-col items-center gap-2 mb-2">
-        <button className="hover:text-gray-300">
-          <Settings size={20} />
-        </button>
-        <div className="w-8 h-8 rounded-full border overflow-hidden">
-          <img src="/avatar.jpg" alt="Avatar" />
-        </div>
-      </div>
+     {/* Bottom section */}
+<div className="flex flex-col items-center gap-2 mb-2">
+  <Link href="/settings" className="hover:text-gray-300">
+    <Settings size={20} />
+  </Link>
+  <div className="w-8 h-8 rounded-full border overflow-hidden">
+    <img src="/hey.jpg" alt="Avatar" />
+  </div>
+</div>
+
     </aside>
   );
 }

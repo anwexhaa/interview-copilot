@@ -7,7 +7,7 @@ export default function ResumeReview() {
   const [jobDescription, setJobDescription] = useState('')
   const [resumeFile, setResumeFile] = useState<File | null>(null)
   const [score, setScore] = useState<number | null>(null)
-  const [feedback, setFeedback] = useState('')
+  const [feedback, setFeedback] = useState<string | string[]>('')
   const [loading, setLoading] = useState(false)
   const [isCheckingScore, setIsCheckingScore] = useState(false)
 
@@ -19,13 +19,30 @@ export default function ResumeReview() {
     setFeedback('')
     setScore(null)
 
-    setTimeout(() => {
-      setScore(78)
-      setFeedback(
-        'Your resume matches most keywords, but try to align responsibilities with job requirements and add measurable impact.'
-      )
+    try {
+      const formData = new FormData()
+      formData.append('jobDescription', jobDescription)
+      formData.append('resumeFile', resumeFile)
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/resume-review`
+, {
+        method: 'POST',
+        body: formData,
+      })
+
+      const data = await response.json()
+
+      const scoreMatch = data.feedback?.match(/score\s*[:\-]?\s*(\d{1,3})/i)
+      const extractedScore = scoreMatch ? parseInt(scoreMatch[1]) : null
+
+      setScore(extractedScore)
+      setFeedback(data.feedback || 'No feedback provided.')
+    } catch (error) {
+      setFeedback('An error occurred while checking your resume.')
+      console.error(error)
+    } finally {
       setLoading(false)
-    }, 1800)
+    }
   }
 
   const handleFix = async () => {
@@ -36,13 +53,32 @@ export default function ResumeReview() {
     setFeedback('')
     setScore(null)
 
-    setTimeout(() => {
-      setScore(92)
-      setFeedback(
-        'We optimized your resume by:\n- Aligning keywords with the job description\n- Adding quantifiable achievements\n- Improving action verbs'
-      )
+    try {
+      const formData = new FormData()
+      formData.append('jobDescription', jobDescription)
+      formData.append('resumeFile', resumeFile)
+      formData.append('optimize', 'true')
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/resume-review`
+, {
+        method: 'POST',
+        body: formData,
+      })
+
+      const data = await response.json()
+
+      // If suggestions are returned as a list (recommended)
+      if (Array.isArray(data.recommendations)) {
+        setFeedback(data.recommendations)
+      } else {
+        setFeedback(data.feedback || 'No optimization suggestions returned.')
+      }
+    } catch (error) {
+      setFeedback('An error occurred while optimizing your resume.')
+      console.error(error)
+    } finally {
       setLoading(false)
-    }, 2500)
+    }
   }
 
   return (
@@ -120,8 +156,8 @@ export default function ResumeReview() {
           </div>
         </div>
 
-        {/* RIGHT - Aligned with text box */}
-        <div className="w-full md:w-[380px] flex flex-col gap-6 mt-8"> {/* Added mt-8 to push down */}
+        {/* RIGHT */}
+        <div className="w-full md:w-[380px] flex flex-col gap-6 mt-8">
           {score !== null && (
             <div className="bg-[#2A2A2A] p-6 rounded-xl shadow-lg transition-all duration-500">
               <h2 className="text-lg font-semibold mb-2">Match Score</h2>
@@ -141,7 +177,17 @@ export default function ResumeReview() {
               <h2 className="text-lg font-semibold mb-2">
                 {isCheckingScore ? 'Analysis' : 'Optimization Suggestions'}
               </h2>
-              <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-line">{feedback}</p>
+              {Array.isArray(feedback) ? (
+                <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+                  {feedback.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-line">
+                  {feedback}
+                </p>
+              )}
             </div>
           )}
         </div>

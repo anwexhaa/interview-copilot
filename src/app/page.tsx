@@ -1,88 +1,107 @@
-'use client'
+'use client';
 
-import { useEffect, useRef, useState } from "react"
-import { useRouter } from "next/navigation"
-import { Send, Code, FileText, Bot } from "lucide-react"
+import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Send, Code, FileText, Bot } from 'lucide-react';
+import { useChat } from '../../components/ChatContext'; // ✅ use your context
+import ReactMarkdown from 'react-markdown'
 
 export default function Home() {
-  const [input, setInput] = useState("")
-  const [showCards, setShowCards] = useState(true)
-  const [messages, setMessages] = useState<{ sender: "user" | "ai"; text: string }[]>([])
-  const [isTyping, setIsTyping] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const router = useRouter()
+  const [input, setInput] = useState('');
+  const [showCards, setShowCards] = useState(true);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  const { messages, addMessage, loading, setLoading } = useChat(); // ✅ destructure from context
 
   const cards = [
     {
-      label: "DSA Practice",
+      label: 'DSA Practice',
       icon: <Code className="w-5 h-5 text-white" />,
-      bg: "bg-[#2A2A2A]",
-      text: "text-white",
-      route: "/dsa"
+      bg: 'bg-[#2A2A2A]',
+      text: 'text-white',
+      route: '/dsa',
     },
     {
-      label: "Mock Interviews",
+      label: 'Mock Interviews',
       icon: <FileText className="w-5 h-5 text-white" />,
-      bg: "bg-[#2A2A2A]",
-      text: "text-white",
-      route: "/mock"
+      bg: 'bg-[#2A2A2A]',
+      text: 'text-white',
+      route: '/mock',
     },
     {
-      label: "Resume Review",
+      label: 'Resume Review',
       icon: <FileText className="w-5 h-5 text-white" />,
-      bg: "bg-[#2A2A2A]",
-      text: "text-white",
-      route: "/resume"
+      bg: 'bg-[#2A2A2A]',
+      text: 'text-white',
+      route: '/resume',
     },
     {
-      label: "AI Interview Copilot",
+      label: 'AI Interview Copilot',
       icon: <Bot className="w-5 h-5 text-black" />,
-      bg: "bg-gradient-to-br from-pink-300 via-purple-300 to-lime-200",
-      text: "text-gray-900",
-      route: "/"
-    }
-  ]
+      bg: 'bg-gradient-to-br from-pink-300 via-purple-300 to-lime-200',
+      text: 'text-gray-900',
+      route: '/',
+    },
+  ];
 
   const handleCardClick = (route: string) => {
-    if (route === "/") {
-      setShowCards(prev => !prev)
+    if (route === '/') {
+      setShowCards((prev) => !prev);
     } else {
-      router.push(route)
+      router.push(route);
     }
-  }
+  };
 
-  const handleSend = () => {
-    if (!input.trim()) return
+  const handleSend = async () => {
+    if (!input.trim()) return;
 
-    const userInput = input
-    setMessages(prev => [...prev, { sender: "user", text: userInput }])
-    setInput("")
-    setIsTyping(true)
+    const userInput = input.trim();
+    addMessage({ role: 'user', content: userInput });
+    setInput('');
+    setLoading(true);
 
-    setTimeout(() => {
-      setMessages(prev => [
-        ...prev,
-        { sender: "ai", text: "This is a dummy AI response." }
-      ])
-      setIsTyping(false)
-    }, 1500)
-  }
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/gemini`
+, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: userInput }),
+      });
+
+      const data = await res.json();
+      const aiMessage = data.aiMessage?.trim() || "Sorry, I couldn't respond.";
+
+      await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/chat`
+, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userMessage: userInput, aiMessage }),
+      });
+
+      addMessage({ role: 'ai', content: aiMessage });
+    } catch (err) {
+      console.error(err);
+      addMessage({ role: 'ai', content: 'Something went wrong.' });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault()
-      handleSend()
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSend();
     }
-  }
+  };
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages, isTyping])
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, loading]);
 
   return (
-    <div className="flex flex-col justify-between flex-1 px-6 py-6 bg-background font-sans overflow-y-auto h-screen relative">
-
-      {/* Header */}
+   <div className="flex flex-col justify-between flex-1 px-6 py-6 bg-background font-sans overflow-y-auto h-screen relative">
+       {/* Header */}
       <div className="mb-6 flex items-center justify-between sticky top-0 z-10 bg-background pb-2">
         <div>
           {messages.length === 0 && (
@@ -100,7 +119,7 @@ export default function Home() {
             className="cursor-pointer rounded-full p-3 shadow-md transition hover:scale-105"
             onClick={() => setShowCards(true)}
             style={{
-              background: "linear-gradient(to bottom right, #f9a8d4, #d8b4fe, #d9f99d)"
+              background: 'linear-gradient(to bottom right, #f9a8d4, #d8b4fe, #d9f99d)',
             }}
           >
             <Bot className="w-5 h-5 text-black" />
@@ -118,9 +137,7 @@ export default function Home() {
                 className={`min-w-[240px] sm:w-[240px] h-[220px] rounded-2xl p-4 flex flex-col justify-between shrink-0 shadow-md cursor-pointer transition-transform duration-200 hover:scale-105 ${card.bg}`}
                 onClick={() => handleCardClick(card.route)}
               >
-                <div className="bg-black/10 p-2 rounded-xl w-fit">
-                  {card.icon}
-                </div>
+                <div className="bg-black/10 p-2 rounded-xl w-fit">{card.icon}</div>
                 <div>
                   <h2 className={`text-base font-semibold ${card.text}`}>{card.label}</h2>
                   <p className={`text-sm ${card.text} opacity-70`}>Click to start</p>
@@ -135,19 +152,24 @@ export default function Home() {
       <div className="flex flex-col gap-4 overflow-y-auto max-h-[400px] pb-4">
         {messages.map((msg, i) => (
           <div
-            key={i}
-            className={`px-4 py-2 rounded-lg text-sm max-w-[75%] ${
-              msg.sender === "user"
-                ? "self-end bg-primary text-white"
-                : "self-start bg-muted text-white"
-            }`}
-          >
-            {msg.text}
-          </div>
+  key={i}
+  className={`px-4 py-2 rounded-lg text-sm max-w-[75%] ${
+    msg.role === 'user'
+      ? 'self-end bg-primary text-primary-foreground'
+      : "bg-[#1E1E1E] text-white self-start"
+  }`}
+>
+  <div className="prose prose-invert text-sm max-w-none">
+  <ReactMarkdown>
+    {msg.content}
+  </ReactMarkdown>
+</div>
+</div>
+
         ))}
 
-        {isTyping && (
-          <div className="self-start text-muted-foreground text-sm px-4 py-2 rounded-lg bg-muted animate-pulse w-fit">
+        {loading && (
+          <div className="max-w-[70%] px-4 py-2 rounded-xl text-sm bg-[#1E1E1E] text-white self-start animate-pulse">
             AI is typing...
           </div>
         )}
@@ -172,5 +194,5 @@ export default function Home() {
         </button>
       </div>
     </div>
-  )
+  );
 }
