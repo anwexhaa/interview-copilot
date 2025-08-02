@@ -22,7 +22,7 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
-  'https://interview-copilot.vercel.app',
+  'https://interview-copilot-bice.vercel.app',
 ];
 
 app.use(cors({

@@ -1,5 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
-
+const prisma = new PrismaClient();
 
 // Save chat to DB using ChatMessage model
 const saveChat = async (userMessage, aiMessage, type, userId) => {
