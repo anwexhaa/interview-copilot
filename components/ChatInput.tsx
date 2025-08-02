@@ -11,6 +11,8 @@ export default function ChatInput() {
     e.preventDefault();
     const prompt = input.trim();
     if (!prompt) return;
+    console.log('Fetching from URL:', `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/chat/ask`);
+
 
     // Show user message immediately
     addMessage({ role: 'user', content: prompt });

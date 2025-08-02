@@ -1,16 +1,11 @@
 // utils/firebaseAdmin.js
-import admin from 'firebase-admin';
-import { readFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+const admin = require('firebase-admin');
+const fs = require('fs');
+const path = require('path');
 
-// __dirname workaround in ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// Read JSON file manually
+// __dirname is available in CommonJS by default
 const serviceAccount = JSON.parse(
-  readFileSync(join(__dirname, 'firebase-admin.json'), 'utf-8')
+  fs.readFileSync(path.join(__dirname, 'firebase-admin.json'), 'utf-8')
 );
 
 if (!admin.apps.length) {
@@ -19,4 +14,4 @@ if (!admin.apps.length) {
   });
 }
 
-export default admin;
+module.exports = admin;

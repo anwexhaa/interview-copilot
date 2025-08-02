@@ -17,37 +17,39 @@ export default function SigninPage() {
   const passwordRef = useRef<HTMLInputElement>(null);
 
   const handleSignUp = async () => {
-  setError('');
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+    setError('');
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-    // 🔑 Get the Firebase ID Token
-    const idToken = await user.getIdToken();
+      // 🔑 Get the Firebase ID Token
+      const idToken = await user.getIdToken();
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users`
-, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${idToken}`, // 👈 Include token here
-      },
-      body: JSON.stringify({
-        uid: user.uid,
-        email: user.email,
-      }),
-    });
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({
+          uid: user.uid,
+          email: user.email,
+        }),
+      });
 
-    if (!response.ok) {
-      throw new Error('User created in Firebase but failed to save to DB.');
+      if (!response.ok) {
+        throw new Error('User created in Firebase but failed to save to DB.');
+      }
+
+      router.push('/');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unknown error occurred.');
+      }
     }
-
-    router.push('/');
-  } catch (err: any) {
-    setError(err.message);
-  }
-};
-
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-300 via-purple-300 to-lime-200 flex items-center justify-center p-4 font-sans">
@@ -68,27 +70,27 @@ export default function SigninPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
               <Input
-              ref={emailRef}
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              autoComplete="email"
-              className="w-full bg-white/70 text-gray-800 border-gray-300/50 focus:ring-2 focus:ring-purple-300"
-            />
+                ref={emailRef}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                autoComplete="email"
+                className="w-full bg-white/70 text-gray-800 border-gray-300/50 focus:ring-2 focus:ring-purple-300"
+              />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
               <Input
-              ref={passwordRef}
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              autoComplete="new-password"
-              className="w-full bg-white/70 text-gray-800 border-gray-300/50 focus:ring-2 focus:ring-purple-300"
-            />
+                ref={passwordRef}
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                autoComplete="new-password"
+                className="w-full bg-white/70 text-gray-800 border-gray-300/50 focus:ring-2 focus:ring-purple-300"
+              />
             </div>
 
             <Button

@@ -14,21 +14,31 @@ const verifyFirebaseToken = require('./middlewares/verifyFirebaseToken');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/users');
 
-
-
-
-
 dotenv.config();
 const prisma = new PrismaClient();
 const app = express();
 
+// ✅ Allow both local and deployed frontend URLs
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'https://interview-copilot.vercel.app',
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3001',
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
 }));
 
 app.use(express.json());
 
-// Mount routes
+// ✅ Mount routes
 app.use('/api/chat', chatRoutes);
 app.use('/api/gemini', geminiRoute);
 app.use('/api/resume-review', resumeReviewRoute);
@@ -39,20 +49,19 @@ app.use('/api/ai-interview', aiInterviewRoute);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
-
-
+// ✅ Root route
 app.get('/', (req, res) => {
   res.send('Interview Copilot backend is running!');
 });
 
+// ✅ Example Prisma route
 app.get('/users', async (req, res) => {
   const users = await prisma.user.findMany();
   res.json(users);
 });
 
+// ✅ Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on ${process.env.API_BASE_URL || `http://localhost:${PORT}`}`);
-
 });
-

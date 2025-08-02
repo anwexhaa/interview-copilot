@@ -13,14 +13,18 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push('/');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unknown error occurred.');
+      }
     }
   };
 
@@ -48,27 +52,19 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
                 autoComplete="email"
-
-              className="w-full bg-white/70 text-gray-800 border-gray-300/50 focus:ring-2 focus:ring-purple-300"
+                className="w-full bg-white/70 text-gray-800 border-gray-300/50 focus:ring-2 focus:ring-purple-300"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
               <Input
-              
-
-              type="password"
-
-              value={password}
-
-              onChange={(e) => setPassword(e.target.value)}
-
-              placeholder="••••••••"
-
-              autoComplete="new-password"
-
-              className="w-full bg-white/70 text-gray-800 border-gray-300/50 focus:ring-2 focus:ring-purple-300"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                autoComplete="new-password"
+                className="w-full bg-white/70 text-gray-800 border-gray-300/50 focus:ring-2 focus:ring-purple-300"
               />
             </div>
 
@@ -81,7 +77,7 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 text-center text-sm text-gray-600">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <a 
               href="/signin" 
               className="font-medium text-purple-600 hover:text-purple-500 transition-colors"
