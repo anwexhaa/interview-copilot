@@ -9,7 +9,7 @@ const router = express.Router();
 router.post('/signup', verifyFirebaseToken, async (req, res) => {
   console.log('🟢 /auth/signup route hit');
 
-  const { email, name, uid } = req.user;
+  const { email, name, id } = req.user;
 
   try {
     // Check if user already exists
@@ -25,7 +25,7 @@ router.post('/signup', verifyFirebaseToken, async (req, res) => {
       data: {
         email,
         name: name || '', // fallback to empty string if name is missing
-        firebaseUid: uid,  // assuming you've updated schema field to `firebaseUid`
+        uid: id,  // assuming you've updated schema field to `firebaseUid`
       },
     });
 

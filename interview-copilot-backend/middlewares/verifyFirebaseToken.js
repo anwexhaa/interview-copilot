@@ -1,4 +1,3 @@
-// middlewares/verifyFirebaseToken.js
 const admin = require('../utils/firebaseAdmin');
 
 const verifyFirebaseToken = async (req, res, next) => {
@@ -16,8 +15,13 @@ const verifyFirebaseToken = async (req, res, next) => {
 
     console.log('✅ Firebase token verified:', { uid, email, name });
 
-    // Just attach user info, don't query or create
-    req.user = { uid, email, name };
+    // ✅ Attach user info for downstream use
+    req.user = {
+      id: uid,           // Required for Prisma compatibility (e.g. userId)
+      email: email,
+      name: name || 'Anonymous',
+    };
+
     next();
   } catch (err) {
     console.error('❌ Token verification failed:', err);

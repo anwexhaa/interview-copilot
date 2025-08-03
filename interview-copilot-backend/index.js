@@ -23,18 +23,21 @@ const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
   'https://interview-copilot-bice.vercel.app',
+  'https://interview-copilot-5cvjifvcd-anweshas-projects-24a008ff.vercel.app'
 ];
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes(origin) || origin === 'null') {
       callback(null, true);
     } else {
+      console.log('❌ Blocked by CORS:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
 }));
+
 
 app.use(express.json());
 
