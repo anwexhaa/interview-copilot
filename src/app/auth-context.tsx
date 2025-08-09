@@ -36,13 +36,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (result?.user) {
           setUser(result.user);
 
-          // 🔹 Send token to backend for session
           const token = await result.user.getIdToken();
-          await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token }),
-          });
+
+          // Wait 500ms before calling backend fetch to stabilize mobile redirect flow
+          await new Promise((r) => setTimeout(r, 500));
+
+          try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/login`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ token }),
+            });
+            if (!res.ok) {
+              throw new Error(`HTTP error! status: ${res.status}`);
+            }
+          } catch (err) {
+            console.error('Login fetch error:', err);
+          }
         }
       })
       .catch((err) => {
@@ -61,14 +71,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (isMobile) {
       await signInWithRedirect(auth, provider);
     } else {
-      const result = await signInWithPopup(auth, provider);
-      if (result.user) {
-        const token = await result.user.getIdToken();
-        await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token }),
-        });
+      try {
+        const result = await signInWithPopup(auth, provider);
+        if (result.user) {
+          const token = await result.user.getIdToken();
+          try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/login`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ token }),
+            });
+            if (!res.ok) {
+              throw new Error(`HTTP error! status: ${res.status}`);
+            }
+          } catch (err) {
+            console.error('Login fetch error:', err);
+          }
+        }
+      } catch (err) {
+        console.error('Popup login failed:', err);
       }
     }
   };
