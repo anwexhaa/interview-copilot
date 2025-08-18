@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌸✨ Interview Copilot 🚀
 
-## Getting Started
+[![License: MIT](https://img.shields.io/badge/License-MIT-pink)](LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-13.5-pink?logo=next.js&logoColor=white)](https://nextjs.org/) 
+[![React](https://img.shields.io/badge/React-18.2-pink?logo=react)](https://reactjs.org/)
+[![Last Commit](https://img.shields.io/github/last-commit/anwexhaa/interview-copilot?color=pink)](https://github.com/anwexhaa/interview-copilot)
 
-First, run the development server:
+✨ **Realtime AI-Powered Coding Companion for Interview Prep**  
+Interview Copilot helps you **ace coding interviews** with a futuristic workspace, AI hints, and progress tracking—all in a sleek dark interface with a touch of pink. 💖
+
+---
+
+## 🚀 Features & Superpowers
+
+💖 **Realtime Coding Workspace** – Solve problems live in an interactive editor.  
+
+🤖 **AI Assistant** – Get instant hints, solutions, and explanations from a smart AI.  
+
+📜 **Blind 75 Problems** – Focus on the most important coding questions curated for success.  
+
+📈 **Progress Tracker** – Visual streaks, bars, and stats to track your coding journey.  
+
+📝 **Notes & Insights** – Save AI tips and your own personal notes in one place.  
+
+🌙 **Futuristic Dark UI** – Sleek, responsive, and optimized for night-mode coding sessions.
+
+---
+
+💡 **Why Interview Copilot?**  
+Prepare faster, smarter, and more stylishly. Let AI guide you through coding interviews while keeping your workflow smooth and visually appealing. Pink never looked this productive! 🌸✨
+
+---
+
+## 🖼️ Sneak Peek 🌸✨
+
+Check out the futuristic interface of **Interview Copilot**:
+
+| Dashboard 🌟 | Blind 75 List 📜 | AI Assistant 🤖 |
+|--------------|----------------|----------------|
+| ![Dashboard](/public/dashboard.png) | ![Blind75](/public/blind75.png) | ![Resume Review](/public/resumereview.png) |
+
+---
+
+## ⚡ Getting Started & Installation 🌸✨
+
+Ready to launch **Interview Copilot** on your machine? Follow these steps:
 
 ```bash
+# 1️⃣ Clone the Repository
+git clone https://github.com/anwexhaa/interview-copilot.git
+cd interview-copilot
+
+# 2️⃣ Install Dependencies
+npm install
+# or
+yarn install
+# or
+pnpm install
+
+# 3️⃣ Setup Environment Variables
+# Create a .env.local file in the root folder and add:
+NEXT_PUBLIC_OPENAI_API_KEY=your_openai_api_key
+DATABASE_URL=your_postgres_url
+NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
+
+# 4️⃣ Run the Development Server
 npm run dev
 # or
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Tech Stack & Tools
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Frontend: Next.js, React, Tailwind CSS
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Backend: Node.js, Express (or your backend setup)
 
-## Learn More
+Database: PostgreSQL, Prisma ORM
 
-To learn more about Next.js, take a look at the following resources:
+Authentication: Firebase Auth
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+AI Integration: OpenAI API, LangChain
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Deployment: Vercel
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🚀 Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The easiest way to deploy Interview Copilot is with Vercel.
+Simply connect your GitHub repo and deploy—Vercel handles the rest.
+
+---
+
+## 🤝 Contributing
+
+Fork the repository
+
+Create your feature branch: git checkout -b feature/my-feature
+
+Commit your changes: git commit -m 'Add some feature'
+
+Push to the branch: git push origin feature/my-feature
+
+Open a Pull Request
+
+---
