@@ -37,7 +37,7 @@ Check out the futuristic interface of **Interview Copilot**:
 
 | Dashboard 🌟 | Blind 75 List 📜 | AI Assistant 🤖 |
 |--------------|----------------|----------------|
-| ![Dashboard](/dashboard.png) | ![Blind75](/blind75.png) | ![Resume Review](/resumereview.png) |
+| ![Dashboard](/public/dashboard.png) | ![Blind75](/public/blind75.png) | ![Resume Review](/public/resumereview.png) |
 
 ---
 
