@@ -35,7 +35,7 @@ Prepare faster, smarter, and more stylishly. Let AI guide you through coding int
 
 Check out the futuristic interface of **Interview Copilot**:
 
-| Dashboard 🌟 | Blind 75 List 📜 | AI Assistant 🤖 |
+| Dashboard 🌟 | Blind 75 List 📜 | Resume Review 📄  |
 |--------------|----------------|----------------|
 | ![Dashboard](/public/dashboard.png) | ![Blind75](/public/blind75.png) | ![Resume Review](/public/resumereview.png) |
 
